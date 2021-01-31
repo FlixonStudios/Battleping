@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MoveByTouchBehaviour : MonoBehaviour
+public class Player : MonoBehaviour
 {
 
-    [SerializeField] float baseMoveSpeed = 100.0f;
+    [SerializeField] float baseThrust = 100.0f;
     [SerializeField] float baseMaxHorizontalMoveSpeed = 5f;
     [SerializeField] float baseMaxVerticalMoveSpeed = 5f;
     [SerializeField] float baseMaxBrakeSpeed = 200.0f;
@@ -16,35 +16,43 @@ public class MoveByTouchBehaviour : MonoBehaviour
 
     private GameObject mathControllerObject;
     private MathController mathController;
+    public PlayerForceControl playerForceControl;
 
     private void Start()
     {
         myBody = GetComponent<Rigidbody2D>();
-        currentMoveSpeed = baseMoveSpeed;
-        mathControllerObject = FindObjectOfType<MathControllerBehaviour>();
+        playerForceControl = new PlayerForceControl(baseThrust);
+        currentMoveSpeed = baseThrust;
+        mathController = FindObjectOfType<MathControllerBehaviour>().mathController;
         
     
     }
 
     private void Update()
     {
-        MovePlayerHorizontally();
-        MovePlayerVertically();
+        MovePlayer();
+        
         ThrottlePlayerVelocity();
         DecelerateToRest();
     }
 
-    public void MovePlayerHorizontally()
+    public void MovePlayer()
     {
-        float playerXInput = joystick.Horizontal * currentMoveSpeed;        
-        myBody.AddForce(new Vector2(playerXInput,0), ForceMode2D.Force);
+        var deltaTime = Time.deltaTime;
+
+        float playerXInput = joystick.Horizontal;            
+        
+        float playerYInput = joystick.Vertical; 
+        
+        AddForceToPlayer(playerForceControl.CalculateForce(playerXInput, playerYInput, deltaTime));
         
     }
-    public void MovePlayerVertically()
+    
+    private void AddForceToPlayer(Vector2 playerInput)
     {
-        float playerYInput = joystick.Vertical * currentMoveSpeed;
-        myBody.AddForce(new Vector2(0, playerYInput), ForceMode2D.Force);
+        myBody.AddForce(playerInput, ForceMode2D.Force);
     }
+
     public void ThrottlePlayerVelocity()
     {
         float xVelocityMax = Mathf.Clamp(myBody.velocity.x, -baseMaxHorizontalMoveSpeed, baseMaxHorizontalMoveSpeed);
@@ -68,7 +76,7 @@ public class MoveByTouchBehaviour : MonoBehaviour
 
         Vector2 decelerationToDefaultForce = new Vector2 (xDecelerationToDefault, yDecelerationToDefault);
 
-        myBody.AddForce(decelerationToDefaultForce, ForceMode2D.Force);
+        AddForceToPlayer(decelerationToDefaultForce);
               
     }
 

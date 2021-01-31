@@ -5,26 +5,13 @@ using UnityEngine;
 public class MathControllerBehaviour : MonoBehaviour
 {
     public MathController mathController;
-
-
     public float Speed;
-    private void Update()
+
+    private void Start()
     {
-        var h = Input.GetAxisRaw("Horizontal");
-        var v = Input.GetAxisRaw("Vertical");
-
-        var deltaTime = Time.deltaTime;
-
-        transform.position += CalculateMovement(h, v, deltaTime);
+        mathController = new MathController();
     }
 
-    private Vector3 CalculateMovement(float h, float v, float deltaTime)
-    {
-        var x = h * Speed * deltaTime;
-        var z = v * Speed * deltaTime;
-
-        return new Vector3(x, 0, z);
-    }
 }
 public class MathController
 {
