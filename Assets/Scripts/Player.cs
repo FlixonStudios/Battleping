@@ -18,13 +18,20 @@ public class Player : MonoBehaviour
     private MathController mathController;
     public PlayerForceControl playerForceControl;
 
+    public IMovement MovementService;
+
     private void Start()
     {
-        myBody = GetComponent<Rigidbody2D>();
-        playerForceControl = new PlayerForceControl(baseThrust);
         currentMoveSpeed = baseThrust;
-        mathController = FindObjectOfType<MathControllerBehaviour>().mathController;
+
+        myBody = GetComponent<Rigidbody2D>();
         
+        playerForceControl = new PlayerForceControl(baseThrust);
+        
+        mathController = FindObjectOfType<MathControllerBehaviour>().mathController;
+
+        if (MovementService == null)
+            MovementService = new MovementService();
     
     }
 
@@ -37,14 +44,12 @@ public class Player : MonoBehaviour
     }
 
     public void MovePlayer()
-    {
-        var deltaTime = Time.deltaTime;
-
-        float playerXInput = joystick.Horizontal;            
-        
-        float playerYInput = joystick.Vertical; 
-        
-        AddForceToPlayer(playerForceControl.CalculateForce(playerXInput, playerYInput, deltaTime));
+    {        
+        AddForceToPlayer(playerForceControl
+                        .CalculateForce(MovementService.GetJoystickInputHorizontalRaw(joystick),
+                                        MovementService.GetJoystickInputVerticalRaw(joystick), 
+                                        MovementService.GetDeltaTime())
+                        );
         
     }
     
