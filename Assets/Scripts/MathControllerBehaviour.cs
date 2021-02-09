@@ -17,13 +17,20 @@ public class MathController
 {
     public float DiminishingExponentialFunction(float zeroToOneInput)
     {
-        if (zeroToOneInput <= Mathf.Epsilon)
+        float inputValueAbsolute = Mathf.Abs(zeroToOneInput);
+        float inputValueSign = Mathf.Sign(zeroToOneInput);
+
+        if (inputValueAbsolute > 1)
+        {
+            return 1 * inputValueSign;
+        }        
+        if (inputValueAbsolute <= Mathf.Epsilon)
         {
             return 0;
         }
         else
         {
-            return Mathf.Clamp(1 / zeroToOneInput, 0, 1);
+            return Mathf.Clamp(inputValueSign * Mathf.Pow(zeroToOneInput, 4), -1, 1);
         }
     }
     public float DefaultDecelerationToUse(float inputVelocity, float moveSpeed)

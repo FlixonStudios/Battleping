@@ -48,4 +48,76 @@ namespace Tests
         }
 
     }
+    public class MathControllerTest_Edit
+    {
+        [Test]
+
+        public void InputValueMoreThanOneToDiminishingExponential_PositiveValue_OutputOne()
+        {
+            var inputValue = 999f;
+            var expectedValue = 1f;
+            var mathController = new MathController();
+
+            Assert.AreEqual(expectedValue, mathController.DiminishingExponentialFunction(inputValue));
+        }
+
+        [Test]
+
+        public void InputValueMoreThanOneToDiminishingExponential_NegativeValue_OutputOne()
+        {
+            var inputValue = -999f;
+            var expectedValue = -1f;
+            var mathController = new MathController();
+
+            Assert.AreEqual(expectedValue, mathController.DiminishingExponentialFunction(inputValue));
+        }
+
+        [Test]
+
+        public void InputOneToDiminishingExponential_NegativeValue_OutputNegativeOne()
+        {
+            var mathController = new MathController();
+            var inputValue = -1f;
+            var outputValue = mathController.DiminishingExponentialFunction(inputValue);
+            var expectedValue = -1f;
+
+            Assert.AreEqual(expectedValue, outputValue);
+        }
+
+        [Test]
+
+        public void InputOneToDiminishingExponential_PositiveValue_OutputOne()
+        {
+            var mathController = new MathController();
+            var inputValue = 1f;
+            var outputValue = mathController.DiminishingExponentialFunction(inputValue);
+            var expectedValue = 1f;
+
+            Assert.AreEqual(expectedValue, outputValue);
+        }
+
+        [Test]
+
+        public void InputZeroToDiminishingExponential_ZeroValue_OutputZero()
+        {
+            var mathController = new MathController();
+            var inputValue = 0f;
+            var outputValue = mathController.DiminishingExponentialFunction(inputValue);
+            var expectedValue = 0f;
+
+            Assert.AreEqual(expectedValue, outputValue);
+        }
+
+        [Test]
+
+        public void InputHalfToDiminishingExponential_05Value_OutputLessThan05()
+        {
+            var mathController = new MathController();
+            var inputValue = 0.5f;
+            var outputValue = mathController.DiminishingExponentialFunction(inputValue);
+            var expectedValue = Mathf.Pow(0.5f,4);
+
+            Assert.AreEqual(expectedValue, outputValue);
+        }
+    }
 }

@@ -11,7 +11,7 @@ public class Player : MonoBehaviour
     [SerializeField] float baseMaxBrakeSpeed = 200.0f;
     [SerializeField] Joystick joystick;
 
-    private float currentMoveSpeed;
+    public float currentMoveSpeed;
     private Rigidbody2D myBody;
 
     private GameObject mathControllerObject;
@@ -26,31 +26,31 @@ public class Player : MonoBehaviour
 
         myBody = GetComponent<Rigidbody2D>();
         
+        mathController = new MathController();
+
+
         playerForceControl = new PlayerForceControl(baseThrust);
-        
-        mathController = FindObjectOfType<MathControllerBehaviour>().mathController;
 
         if (MovementService == null)
+        {
             MovementService = new MovementService();
+        }
+            
     
     }
 
     private void Update()
-    {
-        MovePlayer();
-        
+    {                
+        MovePlayer();        
         ThrottlePlayerVelocity();
         DecelerateToRest();
     }
 
     public void MovePlayer()
     {        
-        AddForceToPlayer(playerForceControl
-                        .CalculateForce(MovementService.GetJoystickInputHorizontalRaw(joystick),
-                                        MovementService.GetJoystickInputVerticalRaw(joystick), 
-                                        MovementService.GetDeltaTime())
-                        );
-        
+        AddForceToPlayer(playerForceControl.CalculateForce(MovementService.GetJoystickInputHorizontalRaw(joystick),
+                                                            MovementService.GetJoystickInputVerticalRaw(joystick), 
+                                                            MovementService.GetDeltaTime()));        
     }
     
     private void AddForceToPlayer(Vector2 playerInput)
